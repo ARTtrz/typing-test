@@ -10,6 +10,8 @@ function App() {
   const [countDown, setCountDown] = useState(SECONDS);
   const [currentInput, setCurrentInput] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [correct, setCorrect] = useState(0);
+  const [incorrect, setIncorrect] = useState(0);
 
   useEffect(() => {
     setWords(generateWords());
@@ -47,6 +49,11 @@ function App() {
   const checkMatch = () => {
     const wordToCompare = words[currentWordIndex];
     const doesItMatch = wordToCompare == currentInput.trim();
+    if (doesItMatch) {
+      setCorrect(correct + 1);
+    } else {
+      setIncorrect((prevValue) => prevValue + 1);
+    }
     console.log({ doesItMatch })
   }
 
@@ -89,6 +96,22 @@ function App() {
                 // </>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="section">
+        <div className="columns">
+          <div className="column has-text-centered">
+            <p className="is-size-5">Words per minute:</p>
+            <p className="has-text-primary is-size-1">
+              {correct}
+            </p>
+          </div>
+          <div className="column has-text-centered">
+            <div className="is-size-5">Accuracy: </div>
+            <p className="has-text-info is-size-1">
+              {Math.round((correct / (correct + incorrect)) * 100)} %
+            </p>
           </div>
         </div>
       </div>
