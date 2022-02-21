@@ -3,12 +3,14 @@ import randomWords from 'random-words';
 
 
 const NUMB_OF_WORDS = 200;
-const SECONDS = 10;
+const SECONDS = 60;
 
 function App() {
   const [words, setWords] = useState([]);
   const [countDown, setCountDown] = useState(SECONDS);
   const [currentInput, setCurrentInput] = useState("");
+  const [currentCharIndex, setCurrentCharIndex] = useState(-1);
+  const [currentChar, setCurrentChar] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
@@ -36,6 +38,8 @@ function App() {
       setCurrentWordIndex(0);
       setCorrect(0)
       setIncorrect(0)
+      setCurrentCharIndex(-1);
+      setCurrentChar("")
 
     }
     if (status !== 'started') {
@@ -60,12 +64,23 @@ function App() {
 
   }
 
-  const handleKeyDown = ({ keyCode }) => {
+  const handleKeyDown = ({ keyCode, key }) => {
     // space bar
     if (keyCode === 32) {
       checkMatch();
       setCurrentInput('')
       setCurrentWordIndex(currentWordIndex + 1)
+      setCurrentCharIndex(-1);
+
+      // backspace
+    } else if (keyCode == 8) {
+      setCurrentCharIndex(currentCharIndex - 1);
+      setCurrentChar("")
+    }
+
+    else {
+      setCurrentCharIndex(currentCharIndex + 1);
+      setCurrentChar(key);
     }
   }
 
@@ -78,6 +93,23 @@ function App() {
       setIncorrect((prevValue) => prevValue + 1);
     }
     console.log({ doesItMatch })
+  }
+
+  const getCharClass = (wordIdx, charIdx, char) => {
+    if (wordIdx == currentWordIndex && charIdx == currentCharIndex && currentChar && status !== 'finished') {
+      if (char == currentChar) {
+        return 'has-background-success'
+      }
+
+      else {
+        return 'has-background-danger'
+      }
+    } else if (wordIdx == currentWordIndex && currentCharIndex >= words[currentWordIndex].length) {
+      return 'has-background-danger'
+    }
+    else {
+      return ''
+    }
   }
 
 
@@ -104,7 +136,7 @@ function App() {
                     <span>
                       {word.split("").map((char, idx) => (
 
-                        <span key={idx}>{char}</span>
+                        <span className={getCharClass(i, idx, char)} key={idx}>{char}</span>
 
 
                       ))}
