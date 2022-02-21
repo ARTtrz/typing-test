@@ -8,7 +8,8 @@ const SECONDS = 2;
 function App() {
   const [words, setWords] = useState([]);
   const [countDown, setCountDown] = useState(SECONDS);
-  const [currentInput, setCurrentInput] = useState("")
+  const [currentInput, setCurrentInput] = useState("");
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
   useEffect(() => {
     setWords(generateWords());
@@ -34,9 +35,21 @@ function App() {
     }, 1000)
   }
 
-  const handleKeyDown = (event) => {
-    console.log(event.key)
+  const handleKeyDown = ({ keyCode }) => {
+    // space bar
+    if (keyCode === 32) {
+      checkMatch();
+      setCurrentInput('')
+      setCurrentWordIndex(currentWordIndex + 1)
+    }
   }
+
+  const checkMatch = () => {
+    const wordToCompare = words[currentWordIndex];
+    const doesItMatch = wordToCompare == currentInput.trim();
+    console.log({ doesItMatch })
+  }
+
 
   return (
     <div className="App">
